@@ -19,28 +19,46 @@ export default class RoomServiceScreen extends React.Component {
     super(props);
     this.state = {
       checked: false,
-      itens: [
-        {title: 'Cama', checked: false},
-        {title: 'Mesa', checked: false},
-        {title: 'Banho', checked: false},
+      itens:[
+        { name: 'Cama', checked: false },
+        { name: 'Mesa', checked: false },
+        { name: 'Banho', checked: false },
       ]
     }
   }
 
+  handleCheck(key) {
+    let itens = [ ... this.state.itens ];
+    let item = { ...itens[key] };
+    item.checked ? item.checked = false : item.checked = true;
+    itens[key] = item;
+    this.setState({
+      itens
+    });
+  }
+
+  renderList() {
+    let itens = this.state.itens;
+    
+    let checkboxes = itens.map(item => {
+      return (
+        <CheckBox
+          key={ item }
+          title={ item.name }
+          checked={ item.checked } 
+          /*onPress={ () => this.handleCheck(key) }*/  />
+      );
+    });
+
+    return checkboxes;
+  }
+
 	render() {
     const {navigate} = this.props.navigation;
-    let itens = this.state.itens;
-    console.log('********************', itens)
     return (
-      <View style={styles.container}>
+      <View style={ styles.container }>
         <ScrollView>
-          {itens.map((key, item) => (
-            <CheckBox
-              title={ item.title }
-              checked={ item.checked }
-              onPress={ () => itens[key].checked = !item[key].checked } /> )
-          )}
-          
+          { this.renderList() }
         </ScrollView>
         <Button 
           title="Confirmar Pedido"
