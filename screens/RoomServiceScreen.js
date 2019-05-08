@@ -40,21 +40,27 @@ export default class RoomServiceScreen extends React.Component {
   renderList() {
     let itens = this.state.itens;
     
-    let checkboxes = itens.map(item => {
+    let checkboxes = itens.map((item, index) => {
       return (
         <CheckBox
-          key={ item }
+          key={ index }
           title={ item.name }
           checked={ item.checked } 
-          /*onPress={ () => this.handleCheck(key) }*/  />
+          onPress={ () => this.handleCheck(index) }  />
       );
     });
 
     return checkboxes;
   }
 
-	render() {
+  getItensArrayAndNavigate() {
+    console.log(this.state.itens);
     const {navigate} = this.props.navigation;
+    navigate('RoomConfirmation');
+  }
+
+	render() {
+    //const {navigate} = this.props.navigation;
     return (
       <View style={ styles.container }>
         <ScrollView>
@@ -65,7 +71,7 @@ export default class RoomServiceScreen extends React.Component {
           type="outline"
           buttonStyle={styles.myButtonBorder}
           titleStyle={styles.myButtonText}
-          onPress={() => navigate('RoomConfirmation')} />
+          onPress={() => this.getItensArrayAndNavigate()} />
       </View>
     );
   }
