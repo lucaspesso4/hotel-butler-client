@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { Button, CheckBox } from 'react-native-elements';
+import firestore_ref from './../config/fb_conf';
 
 export default class RoomServiceScreen extends React.Component {
 	static navigationOptions = {
@@ -53,25 +54,59 @@ export default class RoomServiceScreen extends React.Component {
     return checkboxes;
   }
 
-  getItensArrayAndNavigate() {
-    console.log(this.state.itens);
-    const {navigate} = this.props.navigation;
-    navigate('RoomConfirmation');
+  createDocument() {
+    const itensArray = this.state.itens;
+    let itensToChange = [];
+    /* push checked itens only */
+    itensArray.map((item) => {
+      if(item.checked == true) {
+        itensToChange.push(item.name);
+      }
+    });
+    /* create order object to populate */
+    let order = {
+      atendimentoPendente: true,
+      numeroQuarto: 101,
+      itensParaTroca: []
+    };
+    /* populate order object with array */
+    itensToChange.forEach(element => {
+      order.itensParaTroca.push(element);
+    });
+
+    console.log('ORDER JSON', order);
+    return order;
   }
 
+  async addDocumentAndNavigate() {
+    /* firebase conn */
+    const db = firestore_ref.collection('/servicosDeQuarto');
+    /* create order json */
+    const json_document = this.createDocument();
+    /* adding order to firebase */
+    await db.add(json_document)
+          .then((docRef) => {
+            console.log("document added: ", docRef.id);
+            const {navigate} = this.props.navigation;
+            navigate('RoomConfirmation');
+          })
+          .catch((err) => {
+           console.error("error adding document: ", err);
+          });
+    }
+
 	render() {
-    //const {navigate} = this.props.navigation;
     return (
-      <View style={ styles.container }>
+      <View style={styles.container}>
         <ScrollView>
-          { this.renderList() }
+          {this.renderList()}
         </ScrollView>
         <Button 
           title="Confirmar Pedido"
           type="outline"
           buttonStyle={styles.myButtonBorder}
           titleStyle={styles.myButtonText}
-          onPress={() => this.getItensArrayAndNavigate()} />
+          onPress={() => this.addDocumentAndNavigate()} />
       </View>
     );
   }
