@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, ScrollView, Text, StyleSheet } from 'react-native';
 import { Button, CheckBox } from 'react-native-elements';
+import Counter from './../components/Counter'
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default class FoodServiceScreen extends React.Component {
@@ -19,12 +20,38 @@ export default class FoodServiceScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      checked: false
+      itens:[
+        { name: 'Café', value: 1.50, checked: false },
+        { name: 'Pão', value: 1.50, checked: false },
+        { name: 'Almoço', value: 1.50, checked: false },
+      ]
     }
   }
 
-  handleCheck() {
-    this.state.checked ? this.setState({checked: true}) : this.setState({checked: true});
+  handleCheck(key) {
+    let itens = [ ... this.state.itens ];
+    let item = { ...itens[key] };
+    item.checked ? item.checked = false : item.checked = true;
+    itens[key] = item;
+    this.setState({
+      itens
+    });
+  }
+
+  renderList() {
+    let itens = this.state.itens;
+    let checkboxes = itens.map((item, index) => {
+      return(
+        <View key={index} style={styles.list}>
+          <CheckBox 
+            key={index}
+            title={item.name}
+            checked={item.checked}
+            onPress={() => this.handleCheck(index)} />
+        </View>
+      );
+    });
+    return checkboxes;
   }
 
   render() {
@@ -32,48 +59,7 @@ export default class FoodServiceScreen extends React.Component {
     return (
       <View style={styles.container}>
         <ScrollView>
-          <CheckBox
-            title='Café (150ml)'
-            checked={this.state.checked} />
-          <CheckBox
-            title='Cuscuz'
-            checked={this.state.checked} />
-          <CheckBox
-            title='Cuscuz com Ovo'
-            checked={this.state.checked} />
-          <CheckBox
-            title='Sanduíche Misto'
-            checked={this.state.checked} />
-          <CheckBox
-            title='Achocolatado'
-            checked={this.state.checked} />
-          <CheckBox
-            title='Frango'
-            checked={this.state.checked} />
-          <CheckBox
-            title='Carne Bovina'
-            checked={this.state.checked} />
-          <CheckBox
-            title='Porção de Arroz'
-            checked={this.state.checked} />
-          <CheckBox
-            title='Porção de Baião'
-            checked={this.state.checked} />
-          <CheckBox
-            title='Coca Cola 2L'
-            checked={this.state.checked} />
-          <CheckBox
-            title='Coca Cola 1L'
-            checked={this.state.checked} />
-          <CheckBox
-            title='Suco de Fruta (Jarra)'
-            checked={this.state.checked} />
-          <CheckBox
-            title='Suco de Fruta (500ml)'
-            checked={this.state.checked} />
-          <CheckBox
-            title='Sobremesa'
-            checked={this.state.checked} />
+          {this.renderList()}
         </ScrollView>
         <Button 
           title="Confirmar Pedido"
