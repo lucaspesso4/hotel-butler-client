@@ -6,9 +6,9 @@ export default class Counter extends Component {
     return(
       <View style={styles.list}>
 				<Button
-					title="-" />
+					title="-" onPress={() => this.props.less} />
 				<Button
-					title="+" />
+					title="+" onPress={() => this.props.plus} />
 			</View>
     );
   }

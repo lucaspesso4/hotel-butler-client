@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, ScrollView, Text, StyleSheet } from 'react-native';
-import { Button, CheckBox } from 'react-native-elements';
-import Counter from './../components/Counter'
+import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default class FoodServiceScreen extends React.Component {
@@ -24,7 +23,29 @@ export default class FoodServiceScreen extends React.Component {
         { name: 'Café', value: 1.50, checked: false },
         { name: 'Pão', value: 1.50, checked: false },
         { name: 'Almoço', value: 1.50, checked: false },
-      ]
+        { name: 'Café', value: 1.50, checked: false },
+        { name: 'Pão', value: 1.50, checked: false },
+        { name: 'Almoço', value: 1.50, checked: false },
+        { name: 'Café', value: 1.50, checked: false },
+        { name: 'Pão', value: 1.50, checked: false },
+        { name: 'Almoço', value: 1.50, checked: false },
+        { name: 'Café', value: 1.50, checked: false },
+        { name: 'Pão', value: 1.50, checked: false },
+        { name: 'Almoço', value: 1.50, checked: false },
+        { name: 'Café', value: 1.50, checked: false },
+        { name: 'Pão', value: 1.50, checked: false },
+        { name: 'Almoço', value: 1.50, checked: false },
+        { name: 'Café', value: 1.50, checked: false },
+        { name: 'Pão', value: 1.50, checked: false },
+        { name: 'Almoço', value: 1.50, checked: false },
+        { name: 'Café', value: 1.50, checked: false },
+        { name: 'Pão', value: 1.50, checked: false },
+        { name: 'Almoço', value: 1.50, checked: false },
+        { name: 'Café', value: 1.50, checked: false },
+        { name: 'Pão', value: 1.50, checked: false },
+        { name: 'Almoço', value: 1.50, checked: false },
+      ],
+      number: 0
     }
   }
 
@@ -38,16 +59,51 @@ export default class FoodServiceScreen extends React.Component {
     });
   }
 
+  plus() {
+    this.setState({
+      number: this.state.number + 1
+    })
+  }
+
+  less() {
+    this.setState({
+      number: this.state.number - 1
+    })
+  }
+
   renderList() {
     let itens = this.state.itens;
     let checkboxes = itens.map((item, index) => {
-      return(
-        <View key={index} style={styles.list}>
-          <CheckBox 
-            key={index}
-            title={item.name}
-            checked={item.checked}
-            onPress={() => this.handleCheck(index)} />
+      return(      
+        <View style={styles.flex} key={index}>
+          <Text style={styles.title}>{item.name}</Text>
+
+          <View style={styles.counter}>
+            <Text style={styles.value}>R$ {item.value}</Text>
+            <Button 
+              icon={
+                <Icon
+                  name="minus"
+                  size={10}
+                  color="#4d4d4d" />
+              }
+              type="outline"
+              buttonStyle={styles.myButtonBorder}
+              titleStyle={styles.myButtonText}
+              onPress={() => this.less()} />
+            <Text style={styles.counterNumber}>{this.state.number}</Text>
+            <Button 
+              icon={
+                <Icon 
+                  name="plus"
+                  size={10}
+                  color="#4d4d4d" />
+              }
+              type="outline"
+              buttonStyle={styles.myButtonBorder}
+              titleStyle={styles.myButtonText}
+              onPress={() => this.plus()} />
+          </View>
         </View>
       );
     });
@@ -61,6 +117,7 @@ export default class FoodServiceScreen extends React.Component {
         <ScrollView>
           {this.renderList()}
         </ScrollView>
+        <Text style={styles.totalText}>Total: R$ 00,00</Text>
         <Button 
           title="Confirmar Pedido"
           type="outline"
@@ -78,9 +135,24 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     justifyContent: 'center',
   },
+  flex: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginLeft: 10,
+    marginTop: 10
+  },
+  titleWrapper: {
+    flexDirection: 'row'
+  },
   title: {
-    fontSize: 17,
-    color: '#4d4d4d'
+    fontSize: 15,
+    color: '#4d4d4d',
+    fontWeight: '600'
+  },
+  value: {
+    fontSize: 15,
+    color: '#4d4d4d',
+    fontWeight: '400'
   },
   myButtonBorder: {
     borderRadius: 20,
@@ -93,5 +165,21 @@ const styles = StyleSheet.create({
   myButtonText: {
     color: '#4d4d4d',
     marginLeft: 5
+  },
+  counter: {
+    flexDirection: 'row'
+  },
+  counterNumber: {
+    fontSize: 16,
+    fontWeight: '400'
+  },
+  totalText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#4d4d4d',
+    alignSelf: 'flex-end',
+    marginBottom: 10,
+    marginRight: 15,
+    marginTop: 10
   }
 });
