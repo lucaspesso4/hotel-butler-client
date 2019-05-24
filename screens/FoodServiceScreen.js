@@ -2,6 +2,7 @@ import React from 'react';
 import { View, ScrollView, Text, StyleSheet } from 'react-native';
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import firestore_ref from './../config/fb_conf';
 
 export default class FoodServiceScreen extends React.Component {
   static navigationOptions = {
@@ -20,32 +21,11 @@ export default class FoodServiceScreen extends React.Component {
     super(props);
     this.state = {
       itens:[
-        { name: 'Café', value: 1.50, checked: false },
-        { name: 'Pão', value: 1.50, checked: false },
-        { name: 'Almoço', value: 1.50, checked: false },
-        { name: 'Café', value: 1.50, checked: false },
-        { name: 'Pão', value: 1.50, checked: false },
-        { name: 'Almoço', value: 1.50, checked: false },
-        { name: 'Café', value: 1.50, checked: false },
-        { name: 'Pão', value: 1.50, checked: false },
-        { name: 'Almoço', value: 1.50, checked: false },
-        { name: 'Café', value: 1.50, checked: false },
-        { name: 'Pão', value: 1.50, checked: false },
-        { name: 'Almoço', value: 1.50, checked: false },
-        { name: 'Café', value: 1.50, checked: false },
-        { name: 'Pão', value: 1.50, checked: false },
-        { name: 'Almoço', value: 1.50, checked: false },
-        { name: 'Café', value: 1.50, checked: false },
-        { name: 'Pão', value: 1.50, checked: false },
-        { name: 'Almoço', value: 1.50, checked: false },
-        { name: 'Café', value: 1.50, checked: false },
-        { name: 'Pão', value: 1.50, checked: false },
-        { name: 'Almoço', value: 1.50, checked: false },
-        { name: 'Café', value: 1.50, checked: false },
-        { name: 'Pão', value: 1.50, checked: false },
-        { name: 'Almoço', value: 1.50, checked: false },
+        { name: 'Café', value: 1.50, number: 0 },
+        { name: 'Pão', value: 2.10, number: 0 },
+        { name: 'Almoço', value: 10.30, number: 0 },
       ],
-      number: 0
+      total: 0
     }
   }
 
@@ -59,16 +39,75 @@ export default class FoodServiceScreen extends React.Component {
     });
   }
 
-  plus() {
+  plus(index) {
+    let itens = [ ... this.state.itens ];
+    let item = { ...itens[index] };
+    item.number = item.number + 1;
+    itens[index] = item;
+    let total = this.state.total;
+    total = total + item.value;
     this.setState({
-      number: this.state.number + 1
-    })
+      itens,
+      total
+    });
   }
 
-  less() {
-    this.setState({
-      number: this.state.number - 1
-    })
+  less(index) {
+    if(this.state.itens[index].number > 0) {
+      let itens = [ ... this.state.itens ];
+      let item = { ...itens[index] };
+      item.number = item.number - 1;
+      itens[index] = item;
+      let total = this.state.total;
+      total = total - item.value;
+      this.setState({
+        itens,
+        total
+      });
+    }
+  }
+
+  createDocument() {
+    const itensArray = this.state.itens;
+    let foodOrder = [];
+    /* push checked itens only */
+    itensArray.map((item) => {
+      if(item.number > 0) {
+        let json = { nome: item.name, quantidade: item.number }
+        foodOrder.push(json);
+      }
+    });
+    /* create order object to populate */
+    let order = {
+      atendimentoPendente: true,
+      numeroQuarto: 101,
+      pedido: [],
+      total: this.state.total
+    };
+    /* populate order object with array */
+    foodOrder.forEach(element => {
+      order.pedido.push(element);
+    });
+
+    console.log('ORDER JSON', order);
+    return order;
+  }
+
+  async addDocumentAndNavigate() {
+    /* firebase conn */
+    const db = firestore_ref.collection('/servicosDeCozinha');
+    /* create order json */
+    const json_document = this.createDocument();
+    /* adding order to firebase */
+    await db.add(json_document)
+          .then((docRef) => {
+            console.log("document added: ", docRef.id);
+            const {navigate} = this.props.navigation;
+            navigate('FoodConfirmation');
+          })
+          .catch((err) => {
+           console.error("error adding document: ", err);
+          });
   }
 
   renderList() {
@@ -90,8 +129,8 @@ export default class FoodServiceScreen extends React.Component {
               type="outline"
               buttonStyle={styles.myButtonBorder}
               titleStyle={styles.myButtonText}
-              onPress={() => this.less()} />
-            <Text style={styles.counterNumber}>{this.state.number}</Text>
+              onPress={() => this.less(index)} />
+            <Text style={styles.counterNumber}>{item.number}</Text>
             <Button 
               icon={
                 <Icon 
@@ -102,7 +141,7 @@ export default class FoodServiceScreen extends React.Component {
               type="outline"
               buttonStyle={styles.myButtonBorder}
               titleStyle={styles.myButtonText}
-              onPress={() => this.plus()} />
+              onPress={() => this.plus(index)} />
           </View>
         </View>
       );
@@ -111,19 +150,18 @@ export default class FoodServiceScreen extends React.Component {
   }
 
   render() {
-    const {navigate} = this.props.navigation;
     return (
       <View style={styles.container}>
         <ScrollView>
           {this.renderList()}
         </ScrollView>
-        <Text style={styles.totalText}>Total: R$ 00,00</Text>
+        <Text style={styles.totalText}>Total: R$ {this.state.total + '0'}</Text>
         <Button 
           title="Confirmar Pedido"
           type="outline"
           buttonStyle={styles.myButtonBorder}
           titleStyle={styles.myButtonText}
-          onPress={() => navigate('FoodConfirmation')} />
+          onPress={() => this.addDocumentAndNavigate()} />
       </View>
     );
   }

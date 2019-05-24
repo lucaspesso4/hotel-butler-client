@@ -93,7 +93,7 @@ export default class RoomServiceScreen extends React.Component {
           .catch((err) => {
            console.error("error adding document: ", err);
           });
-    }
+  }
 
 	render() {
     return (
