@@ -31,11 +31,6 @@ export default class HomeScreen extends React.Component {
             buttonStyle={styles.myButtonBorder}
             titleStyle={styles.myButtonText}
             onPress={() => navigate('FoodService')} />
-          <Button
-            title="Reportar um Erro"
-            type="outline"
-            buttonStyle={styles.myButtonBorder}
-            titleStyle={styles.myButtonText} />
         </View>
       </View>
     );

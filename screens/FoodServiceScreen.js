@@ -6,7 +6,7 @@ import firestore_ref from './../config/fb_conf';
 
 export default class FoodServiceScreen extends React.Component {
   static navigationOptions = {
-    title: 'Serviço de Quarto',
+    title: 'Serviço de Alimentação',
     headerStyle: {
       backgroundColor: '#fff',
     },
@@ -21,9 +21,30 @@ export default class FoodServiceScreen extends React.Component {
     super(props);
     this.state = {
       itens:[
-        { name: 'Café', value: 1.50, number: 0 },
-        { name: 'Pão', value: 2.10, number: 0 },
-        { name: 'Almoço', value: 10.30, number: 0 },
+        { name: 'Pão na Chapa', value: 3.90, number: 0 },
+        { name: 'Pão com Queijo', value: 5.90, number: 0 },
+        { name: 'Misto Quente', value: 6.90, number: 0 },
+        { name: 'Ovos com Bacon', value: 8.90, number: 0 },
+        { name: 'Café 250ml', value: 4.90, number: 0 },
+        { name: 'Leite 250ml', value: 4.90, number: 0 },
+        { name: 'Chocolate 250ml', value: 4.90, number: 0 },
+        { name: 'Cheese Burguer', value: 14.60, number: 0 },
+        { name: 'Duplo Burguer', value: 17.60, number: 0 },
+        { name: 'Cheese Bacon Egg', value: 15.90, number: 0 },
+        { name: 'Poção de Fritas', value: 12.30, number: 0 },
+        { name: 'Pastel de Carne 10un', value: 19.90, number: 0 },
+        { name: 'Pastel de Queijo 10un', value: 19.90, number: 0 },
+        { name: 'Omelete com Salada', value: 20.60, number: 0 },
+        { name: 'Iscas de Peixe', value: 24.90, number: 0 },
+        { name: 'Filé Mignon', value: 34.70, number: 0 },
+        { name: 'Lombinho c/ Mandioca', value: 24.90, number: 0 },
+        { name: 'Escondidinho de Carne', value: 29.90, number: 0 },
+        { name: 'Suco de Cajá 500ml', value: 6.50, number: 0 },
+        { name: 'Suco de Caju 500ml', value: 6.50, number: 0 },
+        { name: 'Suco de Laranja 500ml', value: 6.50, number: 0 },
+        { name: 'Suco de Goiaba 500ml', value: 6.50, number: 0 },
+        { name: 'Suco de Maracujá 500ml', value: 6.50, number: 0 },
+        { name: 'Suco de Morango 500ml', value: 6.50, number: 0 }
       ],
       total: 0
     }

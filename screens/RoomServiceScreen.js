@@ -21,9 +21,13 @@ export default class RoomServiceScreen extends React.Component {
     this.state = {
       checked: 0,
       itens:[
-        { name: 'Cama', checked: false },
-        { name: 'Mesa', checked: false },
-        { name: 'Banho', checked: false },
+        { name: 'Lençol', checked: false },
+        { name: 'Fronha', checked: false },
+        { name: 'Travesseiro', checked: false },
+        { name: 'Colcha', checked: false },
+        { name: 'Toalha de Rosto', checked: false },
+        { name: 'Toalha de Banho', checked: false },
+        { name: 'Pano de Piso', checked: false },
       ]
     }
   }
@@ -53,7 +57,8 @@ export default class RoomServiceScreen extends React.Component {
         <CheckBox
           key={ index }
           title={ item.name }
-          checked={ item.checked } 
+          checked={ item.checked }
+          checkedColor={ '#fcb100' }
           onPress={ () => this.handleCheck(index) }  />
       );
     });
