@@ -68,46 +68,53 @@ export default class FoodServiceScreen extends React.Component {
   }
 
   createDocument() {
-    const itensArray = this.state.itens;
-    let foodOrder = [];
-    /* push checked itens only */
-    itensArray.map((item) => {
-      if(item.number > 0) {
-        let json = { nome: item.name, quantidade: item.number }
-        foodOrder.push(json);
-      }
-    });
-    /* create order object to populate */
-    let order = {
-      atendimentoPendente: true,
-      numeroQuarto: 101,
-      pedido: [],
-      total: this.state.total
-    };
-    /* populate order object with array */
-    foodOrder.forEach(element => {
-      order.pedido.push(element);
-    });
-
-    console.log('ORDER JSON', order);
-    return order;
+    if (this.state.total == 0) {
+      return alert('Não podemos efetuar um pedido vazio :(');
+    } else {
+      const itensArray = this.state.itens;
+      let foodOrder = [];
+      /* push checked itens only */
+      itensArray.map((item) => {
+        if(item.number > 0) {
+          let json = { nome: item.name, quantidade: item.number }
+          foodOrder.push(json);
+        }
+      });
+      /* create order object to populate */
+      let order = {
+        atendimentoPendente: true,
+        numeroQuarto: 101,
+        pedido: [],
+        total: this.state.total.toFixed(2)
+      };
+      /* populate order object with array */
+      foodOrder.forEach(element => {
+        order.pedido.push(element);
+      });
+      console.log('ORDER JSON', order);
+      return order;
+    }
   }
 
   async addDocumentAndNavigate() {
-    /* firebase conn */
-    const db = firestore_ref.collection('/servicosDeCozinha');
-    /* create order json */
-    const json_document = this.createDocument();
-    /* adding order to firebase */
-    await db.add(json_document)
-          .then((docRef) => {
-            console.log("document added: ", docRef.id);
-            const {navigate} = this.props.navigation;
-            navigate('FoodConfirmation');
-          })
-          .catch((err) => {
-           console.error("error adding document: ", err);
-          });
+    try {
+      /* firebase conn */
+      const db = firestore_ref.collection('/servicosDeCozinha');
+      /* create order json */
+      const json_document = this.createDocument();
+      /* adding order to firebase */
+      await db.add(json_document)
+            .then((docRef) => {
+              console.log("document added: ", docRef.id);
+              const {navigate} = this.props.navigation;
+              navigate('FoodConfirmation');
+            })
+            .catch((err) => {
+            console.error("error adding document: ", err);
+            });
+    } catch(err) {
+      alert('Ocorreu um erro ao efetuar o pedido. Verifique sua conexão e tente novamente.')
+    }
   }
 
   renderList() {
@@ -118,7 +125,7 @@ export default class FoodServiceScreen extends React.Component {
           <Text style={styles.title}>{item.name}</Text>
 
           <View style={styles.counter}>
-            <Text style={styles.value}>R$ {item.value}</Text>
+            <Text style={styles.value}>R$ {item.value.toFixed(2)}</Text>
             <Button 
               icon={
                 <Icon
@@ -155,7 +162,7 @@ export default class FoodServiceScreen extends React.Component {
         <ScrollView>
           {this.renderList()}
         </ScrollView>
-        <Text style={styles.totalText}>Total: R$ {this.state.total + '0'}</Text>
+        <Text style={styles.totalText}>Total: R$ {this.state.total.toFixed(2)}</Text>
         <Button 
           title="Confirmar Pedido"
           type="outline"

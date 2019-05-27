@@ -19,7 +19,7 @@ export default class RoomServiceScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      checked: false,
+      checked: 0,
       itens:[
         { name: 'Cama', checked: false },
         { name: 'Mesa', checked: false },
@@ -31,7 +31,14 @@ export default class RoomServiceScreen extends React.Component {
   handleCheck(key) {
     let itens = [ ... this.state.itens ];
     let item = { ...itens[key] };
-    item.checked ? item.checked = false : item.checked = true;
+    //item.checked ? item.checked = false : item.checked = true;
+    if (item.checked == false) {
+      item.checked = true;
+      this.setState({checked: this.state.checked + 1});
+    } else if (item.checked == true) {
+      item.checked = false;
+      this.setState({checked: this.state.checked - 1});
+    }
     itens[key] = item;
     this.setState({
       itens
@@ -55,27 +62,31 @@ export default class RoomServiceScreen extends React.Component {
   }
 
   createDocument() {
-    const itensArray = this.state.itens;
-    let itensToChange = [];
-    /* push checked itens only */
-    itensArray.map((item) => {
-      if(item.checked == true) {
-        itensToChange.push(item.name);
-      }
-    });
-    /* create order object to populate */
-    let order = {
-      atendimentoPendente: true,
-      numeroQuarto: 101,
-      itensParaTroca: []
-    };
-    /* populate order object with array */
-    itensToChange.forEach(element => {
-      order.itensParaTroca.push(element);
-    });
+    if (this.state.checked == 0) {
+      return alert('Por favor, marque alguma opção.');
+    } else {
+      const itensArray = this.state.itens;
+      let itensToChange = [];
+      /* push checked itens only */
+      itensArray.map((item) => {
+        if(item.checked == true) {
+          itensToChange.push(item.name);
+        }
+      });
+      /* create order object to populate */
+      let order = {
+        atendimentoPendente: true,
+        numeroQuarto: 101,
+        itensParaTroca: []
+      };
+      /* populate order object with array */
+      itensToChange.forEach(element => {
+        order.itensParaTroca.push(element);
+      });
 
-    console.log('ORDER JSON', order);
-    return order;
+      console.log('ORDER JSON', order);
+      return order;
+    }
   }
 
   async addDocumentAndNavigate() {
